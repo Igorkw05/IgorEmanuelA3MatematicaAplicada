@@ -1,7 +1,7 @@
 # Semáforo Inteligente - Projeto A3
 
 Projeto da disciplina de Matemática Computacional Aplicada.
-UNICURITIBA - 2025
+UNICURITIBA - 2026
 
 **Alunos:**
 - Igor Klemann Wendling (172511996)
