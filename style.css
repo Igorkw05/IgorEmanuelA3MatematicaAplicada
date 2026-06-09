@@ -1,0 +1,459 @@
+/* semaforo inteligente - projeto A3
+   Matematica Computacional Aplicada - UNICURITIBA
+   Igor Klemann Wendling e Emanuel De Jesus Faustino Afonso */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: radial-gradient(circle at top, #1f1f1f, #090909 70%);
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+.topo {
+  text-align: center;
+  padding: 28px 10px 22px;
+  background: #050505;
+  border-bottom: 1px solid #333;
+}
+
+.topo h1 {
+  color: #00ff88;
+  font-size: 48px;
+  letter-spacing: 2px;
+}
+
+.topo p {
+  margin-top: 8px;
+  color: #e0e0e0;
+  font-size: 17px;
+}
+
+main {
+  width: min(1200px, 96%);
+  margin: 22px auto;
+}
+
+.card {
+  background: linear-gradient(145deg, #252525, #181818);
+  border: 1px solid #333;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+}
+
+.painel-principal {
+  display: grid;
+  grid-template-columns: 220px 1fr 220px 220px;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.semaforo-card {
+  text-align: center;
+}
+
+.semaforo-card h2,
+.centro h2,
+.controles h2,
+.info-grid h2 {
+  font-size: 24px;
+  margin-bottom: 14px;
+}
+
+/* estilo do semaforo fisico */
+.semaforo {
+  width: 92px;
+  height: 190px;
+  background: #050505;
+  border: 2px solid #444;
+  border-radius: 42px;
+  padding: 13px;
+  margin: 18px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.luz {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  opacity: 0.22;
+  transition: 0.3s;
+}
+
+.vermelho { background: red; }
+.amarelo { background: yellow; }
+.verde { background: lime; }
+
+.luz.ativo {
+  opacity: 1;
+  box-shadow: 0 0 28px currentColor;
+}
+
+.status {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.verde-texto { color: #39ff14; }
+.vermelho-texto { color: #ff4040; }
+.amarelo-texto { color: #ffd500; }
+
+/* semaforo do pedestre tem altura diferente pq so tem 2 luzes */
+.semaforo-pedestre {
+  width: 92px;
+  height: 150px;
+  background: #050505;
+  border: 2px solid #444;
+  border-radius: 35px;
+  margin: 18px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px;
+}
+
+.icone-pedestre {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  opacity: 0.25;
+}
+
+.icone-pedestre.ativo {
+  opacity: 1;
+  box-shadow: 0 0 22px currentColor;
+}
+
+.centro {
+  min-width: 360px;
+}
+
+/* cruzamento visual */
+.cruzamento {
+  position: relative;
+  height: 260px;
+  background: #176b24;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+.estrada-horizontal {
+  position: absolute;
+  left: 0;
+  top: 95px;
+  width: 100%;
+  height: 70px;
+  background: #3f3f3f;
+  z-index: 2;
+}
+
+.estrada-vertical {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 35px);
+  width: 70px;
+  height: 100%;
+  background: #3f3f3f;
+  z-index: 2;
+}
+
+/* faixas brancas no meio da estrada */
+.linha-horizontal {
+  position: absolute;
+  top: 128px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    #ffffff 0 22px,
+    transparent 22px 44px
+  );
+  z-index: 3;
+  opacity: 0.75;
+}
+
+.linha-vertical {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 1.5px);
+  width: 3px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    #ffffff 0 22px,
+    transparent 22px 44px
+  );
+  z-index: 3;
+  opacity: 0.75;
+}
+
+.grama {
+  position: absolute;
+  background: linear-gradient(135deg, #118a17, #0a5710);
+  z-index: 1;
+}
+
+.grama-1 { top: 0; left: 0; width: calc(50% - 35px); height: 95px; }
+.grama-2 { top: 0; right: 0; width: calc(50% - 35px); height: 95px; }
+.grama-3 { bottom: 0; left: 0; width: calc(50% - 35px); height: 95px; }
+.grama-4 { bottom: 0; right: 0; width: calc(50% - 35px); height: 95px; }
+
+.faixa-pedestre {
+  position: absolute;
+  bottom: 0;
+  left: calc(50% - 45px);
+  width: 90px;
+  height: 55px;
+  z-index: 5;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.faixa-pedestre span {
+  width: 9px;
+  height: 45px;
+  background: white;
+}
+
+.carro,
+.pedestre {
+  position: absolute;
+  z-index: 8;
+  font-size: 34px;
+}
+
+/* posições iniciais dos veiculos */
+.carro-a  { left: 105px; top: 112px; }
+.carro-b  { left: calc(50% - 17px); top: 24px; }
+.pedestre { right: 120px; bottom: 28px; }
+
+/* segundo carro/pedestre um pouco atrás */
+.carro-a2   { left: 45px;  top: 112px; }
+.carro-b2   { left: calc(50% - 17px); top: 55px; }
+.pedestre-1 { right: 120px; bottom: 28px; }
+.pedestre-2 { right: 80px;  bottom: 28px; }
+
+/* animações */
+.mover-via-a  { animation: moverViaA  3s linear; }
+.mover-via-b  { animation: moverViaB  3s linear; }
+.mover-pedestre { animation: moverPedestre 3s linear; }
+.mover-via-a2 { animation: moverViaA2 3s linear; }
+.mover-via-b2 { animation: moverViaB2 3s linear; }
+.mover-pedestre2 { animation: moverPedestre2 3s linear; }
+
+@keyframes moverViaA {
+  0%   { left: -45px; top: 112px; }
+  100% { left: 100%;  top: 112px; }
+}
+
+@keyframes moverViaB {
+  0%   { left: calc(50% - 17px); top: -45px; }
+  100% { left: calc(50% - 17px); top: 100%;  }
+}
+
+@keyframes moverPedestre {
+  0%   { right: 55px; bottom: 28px; }
+  100% { right: calc(50% + 70px); bottom: 28px; }
+}
+
+@keyframes moverViaA2 {
+  0%   { left: -90px; top: 112px; }
+  100% { left: 100%;  top: 112px; }
+}
+
+@keyframes moverViaB2 {
+  0%   { left: calc(50% - 17px); top: -90px; }
+  100% { left: calc(50% - 17px); top: 100%;  }
+}
+
+@keyframes moverPedestre2 {
+  0%   { right: 80px; bottom: 28px; }
+  100% { right: calc(50% + 110px); bottom: 28px; }
+}
+
+/* animação do modo emergência */
+.piscando {
+  animation: piscar 0.45s infinite alternate;
+}
+
+@keyframes piscar {
+  from { opacity: 0.2; }
+  to   { opacity: 1; box-shadow: 0 0 25px yellow; }
+}
+
+.estado-box {
+  background: #080808;
+  border-radius: 8px;
+  margin-top: 14px;
+  padding: 14px;
+  line-height: 1.55;
+}
+
+.destaque-verde {
+  color: #39ff14;
+  font-weight: bold;
+}
+
+.controles {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.controles p {
+  margin: 8px 0 16px;
+  color: #e0e0e0;
+}
+
+.botoes {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+button {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 22px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #f5f5f5;
+  color: #111;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+button.emergencia {
+  background: #e31818;
+  color: white;
+}
+
+button.reset {
+  background: #e6e6e6;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+th, td {
+  border: 1px solid #3c3c3c;
+  padding: 9px;
+  text-align: center;
+}
+
+th {
+  background: #111;
+}
+
+#historico {
+  padding-left: 22px;
+  margin-top: 10px;
+  line-height: 1.8;
+}
+
+#historico li::marker {
+  color: #39ff14;
+}
+
+/* responsividade basica pra celular */
+@media (max-width: 1000px) {
+  .painel-principal {
+    grid-template-columns: 1fr;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topo h1 {
+    font-size: 34px;
+  }
+}
+
+/* parte de baixo - teoria e maquina de estados */
+.formula-box {
+  background: #0c0c0c;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 14px;
+  margin: 12px 0;
+  line-height: 1.8;
+}
+
+.lista-matematica {
+  padding-left: 22px;
+  line-height: 1.8;
+  margin: 12px 0;
+}
+
+.maquina-estados {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.estado-circulo {
+  width: 95px;
+  height: 95px;
+  background: #111;
+  border: 2px solid #00ff88;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 18px rgba(0, 255, 136, 0.35);
+  font-weight: bold;
+  text-align: center;
+}
+
+.estado-circulo span {
+  font-size: 12px;
+  color: #ddd;
+  margin-top: 4px;
+}
+
+.emergencia-estado {
+  border-color: #e31818;
+  box-shadow: 0 0 18px rgba(227, 24, 24, 0.45);
+}
+
+.seta {
+  font-size: 28px;
+  color: #00ff88;
+  font-weight: bold;
+}

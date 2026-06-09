@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semáforo Inteligente</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <header class="topo">
+    <h1>SEMÁFORO INTELIGENTE</h1>
+    <p>Modelagem e simulação de um cruzamento urbano</p>
+  </header>
+
+  <main>
+
+    <!-- painel com os 3 semaforos e o cruzamento no meio -->
+    <section class="painel-principal">
+
+      <div class="card semaforo-card">
+        <h2>Via A</h2>
+        <div class="semaforo">
+          <div id="a-vermelho" class="luz vermelho"></div>
+          <div id="a-amarelo" class="luz amarelo"></div>
+          <div id="a-verde" class="luz verde ativo"></div>
+        </div>
+        <p id="status-a" class="status verde-texto">Verde</p>
+      </div>
+
+      <div class="card centro">
+        <h2>Cruzamento</h2>
+
+        <div class="cruzamento">
+          <!-- grama nos 4 cantos -->
+          <div class="grama grama-1"></div>
+          <div class="grama grama-2"></div>
+          <div class="grama grama-3"></div>
+          <div class="grama grama-4"></div>
+
+          <!-- estradas -->
+          <div class="estrada-horizontal"></div>
+          <div class="estrada-vertical"></div>
+
+          <!-- faixas brancas -->
+          <div class="linha-horizontal"></div>
+          <div class="linha-vertical"></div>
+
+          <!-- faixa de pedestre embaixo -->
+          <div class="faixa-pedestre">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+
+          <!-- veiculos via A (horizontal) -->
+          <div id="carro-a"  class="carro carro-a">🚗</div>
+          <div id="carro-a2" class="carro carro-a2">🚕</div>
+
+          <!-- veiculos via B (vertical) -->
+          <div id="carro-b"  class="carro carro-b">🚙</div>
+          <div id="carro-b2" class="carro carro-b2">🚐</div>
+
+          <!-- pedestres -->
+          <div id="pedestre"  class="pedestre pedestre-1">🚶</div>
+          <div id="pedestre2" class="pedestre pedestre-2">🚶‍♀️</div>
+        </div>
+
+        <!-- mostra estado atual, tempo e representação binária -->
+        <div class="estado-box">
+          <p><strong>Estado atual:</strong> <span id="estado-atual" class="destaque-verde">Via A liberada</span></p>
+          <p><strong>Tempo:</strong> <span id="tempo">10</span>s</p>
+          <p><strong>Binário:</strong> <span id="binario">10000001</span></p>
+        </div>
+      </div>
+
+      <div class="card semaforo-card">
+        <h2>Via B</h2>
+        <div class="semaforo">
+          <div id="b-vermelho" class="luz vermelho ativo"></div>
+          <div id="b-amarelo" class="luz amarelo"></div>
+          <div id="b-verde" class="luz verde"></div>
+        </div>
+        <p id="status-b" class="status vermelho-texto">Vermelho</p>
+      </div>
+
+      <div class="card semaforo-card">
+        <h2>Pedestre</h2>
+        <div class="semaforo-pedestre">
+          <div id="p-vermelho" class="icone-pedestre vermelho ativo">🚷</div>
+          <div id="p-verde"    class="icone-pedestre verde">🚶</div>
+        </div>
+        <p id="status-p" class="status amarelo-texto">Aguarde</p>
+      </div>
+
+    </section>
+
+    <!-- botões de controle - simulam entradas binárias do sistema -->
+    <section class="card controles">
+      <h2>Entradas do Sistema</h2>
+      <p>Use os botões para simular entradas binárias: 1 = presença/ativo, 0 = ausência/inativo.</p>
+
+      <div class="botoes">
+        <button onclick="liberarViaA()">🚗 Veículo Via A</button>
+        <button onclick="liberarViaB()">🚙 Veículo Via B</button>
+        <button onclick="liberarPedestre()">🚶 Pedestre</button>
+        <button class="emergencia" onclick="modoEmergencia()">🚨 Emergência</button>
+        <button class="reset" onclick="resetarSistema()">↻ Resetar</button>
+      </div>
+    </section>
+
+    <!-- tabela e historico -->
+    <section class="info-grid">
+      <div class="card">
+        <h2>Tabela de Decisão</h2>
+        <!-- A = via A, B = via B, P = pedestre -->
+        <table>
+          <thead>
+            <tr>
+              <th>A</th><th>B</th><th>P</th><th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>0</td><td>0</td><td>0</td><td>Via A padrão</td></tr>
+            <tr><td>1</td><td>0</td><td>0</td><td>Via A verde</td></tr>
+            <tr><td>0</td><td>1</td><td>0</td><td>Via B verde</td></tr>
+            <tr><td>1</td><td>1</td><td>0</td><td>Via A com prioridade</td></tr>
+            <tr><td>0</td><td>0</td><td>1</td><td>Pedestre ativo</td></tr>
+            <tr><td>1</td><td>0</td><td>1</td><td>Pedestre ativo</td></tr>
+            <tr><td>0</td><td>1</td><td>1</td><td>Pedestre ativo</td></tr>
+            <tr><td>1</td><td>1</td><td>1</td><td>Pedestre ativo</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Histórico do Sistema</h2>
+        <ul id="historico">
+          <li>Sistema iniciado: Via A liberada</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- seção de teoria - modelagem matematica -->
+    <section class="info-grid">
+      <div class="card">
+        <h2>Modelagem com Conjuntos</h2>
+        <p>Aplicação da Teoria dos Conjuntos para representar os elementos do sistema.</p>
+
+        <div class="formula-box">
+          <p><strong>V<sub>A</sub></strong> = {carroA1, carroA2} = {🚗, 🚕}</p>
+          <p><strong>V<sub>B</sub></strong> = {carroB1, carroB2} = {🚙, 🚐}</p>
+          <p><strong>P</strong> = {pedestre1, pedestre2} = {🚶, 🚶‍♀️}</p>
+        </div>
+
+        <ul class="lista-matematica">
+          <li>carroA1 ∈ V<sub>A</sub></li>
+          <li>carroA2 ∈ V<sub>A</sub></li>
+          <li>carroB1 ∈ V<sub>B</sub></li>
+          <li>carroB2 ∈ V<sub>B</sub></li>
+          <li>pedestre1 ∈ P</li>
+          <li>pedestre2 ∈ P</li>
+        </ul>
+
+        <!-- S = todos os participantes do cruzamento, conjuntos disjuntos -->
+        <div class="formula-box">
+          <p><strong>S = V<sub>A</sub> ∪ V<sub>B</sub> ∪ P</strong></p>
+          <p><strong>(V<sub>A</sub> ∪ V<sub>B</sub>) ∩ P = ∅</strong></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Estados do Sistema</h2>
+        <p>
+          S0 = Via A Verde<br>
+          S1 = Via B Verde<br>
+          S2 = Pedestre Ativo<br>
+          S3 = Emergência
+        </p>
+
+        <div class="formula-box">
+          <p><strong>E</strong> = {S0, S1, S2, S3}</p>
+        </div>
+
+        <ul class="lista-matematica">
+          <li><strong>S0:</strong> Via A verde — 10000001</li>
+          <li><strong>S1:</strong> Via B verde — 00110010</li>
+          <li><strong>S2:</strong> Pedestre ativo — 00100111</li>
+          <li><strong>S3:</strong> Emergência — 01001000</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="info-grid">
+      <div class="card">
+        <h2>Regras Lógicas</h2>
+
+        <ul class="lista-matematica">
+          <li>Se P = 1, então o estado será Pedestre ativo.</li>
+          <li>Se A = 1 e B = 0 e P = 0, então o estado será Via A verde.</li>
+          <li>Se A = 0 e B = 1 e P = 0, então o estado será Via B verde.</li>
+          <li>Se A = 1 e B = 1 e P = 0, então a Via A tem prioridade.</li>
+          <li>Se emergência = 1, então o estado será Modo emergência.</li>
+        </ul>
+
+        <p><strong>Expressões Booleanas:</strong></p>
+        <div class="formula-box">
+          A ∧ ¬B → S0 (Via A Verde)<br>
+          B ∧ ¬A → S1 (Via B Verde)<br>
+          P → S2 (Pedestre Ativo)<br>
+          E → S3 (Emergência)
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Máquina de Estados</h2>
+        <div class="maquina-estados">
+          <div class="estado-circulo">S0<br><span>Via A</span></div>
+          <div class="seta">→</div>
+          <div class="estado-circulo">S1<br><span>Via B</span></div>
+          <div class="seta">→</div>
+          <div class="estado-circulo">S2<br><span>Pedestre</span></div>
+          <div class="seta">→</div>
+          <div class="estado-circulo emergencia-estado">S3<br><span>Emergência</span></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
