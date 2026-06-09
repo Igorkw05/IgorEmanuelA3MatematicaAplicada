@@ -9,7 +9,7 @@ UNICURITIBA - 2026
 
 ## Como rodar
 
-Só abrir o `semaforo.html` no navegador, não precisa instalar nada.
+Só abrir o `semaforo.html` no navegador.
 
 ## O que o projeto faz
 
