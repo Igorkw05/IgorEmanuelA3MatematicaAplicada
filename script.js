@@ -8,7 +8,7 @@ let ciclando = true; // vira false só na emergencia
 let faseCiclo = 0;   // 0=via A, 1=via B, 2=pedestre
 
 // quanto tempo cada fase dura (em segundos)
-const DURACAO = [3, 3, 3]; // viaA, viaB, pedestre
+const DURACAO = [3, 3, 10]; // viaA, viaB, pedestre
 
 // limpa todas as luzes antes de mudar de estado
 function limparLuzes() {
