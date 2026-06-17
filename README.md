@@ -7,6 +7,10 @@ UNICURITIBA - 2026
 - Igor Klemann Wendling (172511996)
 - Emanuel De Jesus Faustino Afonso (172522987)
 
+ARDUINO: 
+- O codigo do arduino é o arquivo .ino.
+- A foto do tinkercad tem o nome de ArduinoSemaforo.
+
 ## Como rodar
 
 Só abrir o `semaforo.html` no navegador.
