@@ -8,7 +8,7 @@ UNICURITIBA - 2026
 - Emanuel De Jesus Faustino Afonso (172522987)
 
 ARDUINO: 
-- O codigo do arduino é o arquivo .ino.
+- O codigo do arduino é o arquivo semaforoArduino.ino.
 - A foto do tinkercad tem o nome de ArduinoSemaforo.
 
 ## Como rodar
